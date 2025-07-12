@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastrar Personagem</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="form-container">
+    <h2>🎮 Novo Personagem</h2>
+    
+    <label>Escolha uma imagem:</label>
+    <div class="galeria-imagens" id="seletor-imagens"></div>
+    <input type="hidden" name="char_img" id="char_img" />
+
+    <form id="personagem-form">
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
+
+      <label>Energia Azul:</label>
+      <input type="number" name="energia_azul" value="100" min="0" max="999">
+
+      <label>Energia Vermelha:</label>
+      <input type="number" name="energia_vermelha" value="100" min="0" max="999">
+
+      <label>Máx. Azul:</label>
+      <input type="number" name="max_azul" value="100" min="0" max="999">
+
+      <label>Máx. Vermelha:</label>
+      <input type="number" name="max_vermelha" value="100" min="0" max="999">
+    
+      <label>Tempo para regenerar 1 ponto de energia azul (min):</label>
+<input type="number" name="regen_azul" value="30" min="1" max="1440">
+
+<label>Tempo para regenerar 1 ponto de energia vermelha (min):</label>
+<input type="number" name="regen_vermelha" value="60" min="1" max="1440">
+
+       
+      <button type="submit">Salvar</button>
+      <a href="index.html" class="voltar">← Voltar</a>
+    </form>
+  </div>
+
+  <!-- Firebase config e scripts do app -->
+  <script src="firebase-config.js"></script>
+  <script src="cadastro.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

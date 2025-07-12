@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Mystery Dungeons</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="form-container">
+    <h2>🌀 Nova Dungeon</h2>
+    <form id="dungeon-form">
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
+
+      <label>Tipo de energia:</label>
+      <select name="tipo" required>
+        <option value="azul">🔵 Azul</option>
+        <option value="vermelha">🔴 Vermelha</option>
+      </select>
+
+      <label>Consumo de energia:</label>
+      <input type="number" name="consumo" value="1" min="1" required>
+
+      <label>Imagem da Dungeon:</label>
+      <input type="file" id="imagem" accept="image/*" />
+
+      <button type="submit">Salvar</button>
+    </form>
+  </div>
+
+  <section class="lista-dungeons">
+    <h2>🌌 Dungeons Cadastradas</h2>
+    <div id="dungeon-list" class="galeria"></div>
+  </section>
+
+  <script src="firebase-config.js"></script>
+  <script src="dungeons.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Personagem</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="form-container">
+    <h2>✏️ Editar Personagem</h2>
+    <form id="editar-form">
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
+      <label>Energia Azul:</label>
+      <input type="number" name="energia_azul" min="0" max="999">
+      <label>Energia Vermelha:</label>
+      <input type="number" name="energia_vermelha" min="0" max="999">
+      <label>Máx. Azul:</label>
+      <input type="number" name="max_azul" min="0" max="999">
+      <label>Máx. Vermelha:</label>
+      <input type="number" name="max_vermelha" min="0" max="999">
+      <label>Regen. Azul (min):</label>
+<input type="number" name="regen_azul" value="30" min="1" max="999">
+<label>Regen. Vermelha (min):</label>
+<input type="number" name="regen_vermelha" value="60" min="1" max="999">
+
+      <button type="submit">Salvar Alterações</button>
+      <a href="index.html" class="voltar">← Voltar</a>
+    </form>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="editar.js"></script>
+</body>
+</html>

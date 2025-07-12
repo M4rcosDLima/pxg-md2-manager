@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mystery Dungeons</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+  <div class="form-container">
+    <h2>🏰 Cadastrar Dungeon</h2>
+    <form id="dungeon-form">
+      <label>Nome da Dungeon:</label>
+      <input type="text" name="nome" required />
+
+      <label>Tipo de Energia:</label>
+      <select name="tipo" required>
+        <option value="azul">🔵 Azul</option>
+        <option value="vermelha">🔴 Vermelha</option>
+      </select>
+
+      <label>Quantidade de Energia Consumida:</label>
+      <input type="number" name="quantidade" min="1" value="1" required />
+
+      <label>Escolha uma imagem:</label>
+      <div class="galeria-imagens" id="seletor-dungeons"></div>
+      <input type="hidden" name="imagem" id="imagem" />
+
+      <button type="submit">Salvar</button>
+      <a href="index.html" class="voltar">← Voltar</a>
+    </form>
+
+    <h3 style="color: purple;">🗺️ Suas Dungeons</h3>
+
+    <div id="dungeons-list"></div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script>
+    const form = document.getElementById("dungeon-form");
+    const galeria = document.getElementById("seletor-dungeons");
+    const inputImg = document.getElementById("imagem");
+    const dungeonList = document.getElementById("dungeons-list");
+
+ const imagens = [
+  "red-gya-dungeon.jpg",
+  "sunflora.webp",
+  "fire-lair.png",
+  "plasma-dome.png",
+  "ghost-tower.png"
+];
+
+
+    imagens.forEach(nome => {
+      const img = document.createElement("img");
+      img.src = `assets/dungeons-images/${nome}`;
+      img.alt = nome;
+      img.onclick = () => {
+        document.querySelectorAll(".galeria-imagens img").forEach(i => i.classList.remove("selected"));
+        img.classList.add("selected");
+        inputImg.value = nome;
+      };
+      galeria.appendChild(img);
+    });
+
+    firebase.auth().onAuthStateChanged(async user => {
+      if (!user) {
+        alert("Você precisa estar logado.");
+        location.href = "login.html";
+        return;
+      }
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const data = {
+          nome: form.nome.value,
+          tipo: form.tipo.value,
+          quantidade: parseInt(form.quantidade.value),
+          imagem: inputImg.value || "default.png",
+          uid: user.uid
+        };
+
+        try {
+          const res = await fetch("http://localhost:8000/dungeons", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+
+          if (res.ok) {
+            Swal.fire("Sucesso!", "Dungeon criada com sucesso!", "success");
+            form.reset();
+            inputImg.value = "";
+            document.querySelectorAll(".galeria-imagens img").forEach(i => i.classList.remove("selected"));
+            carregarDungeons(user.uid);
+          } else {
+            Swal.fire("Erro", "Não foi possível cadastrar.", "error");
+          }
+        } catch (err) {
+          Swal.fire("Erro", "Falha na requisição.", "error");
+        }
+      });
+
+      carregarDungeons(user.uid);
+    });
+
+    async function carregarDungeons(uid) {
+      const res = await fetch("http://localhost:8000/dungeons");
+      const data = await res.json();
+      dungeonList.innerHTML = "";
+
+      const minhas = Object.entries(data || {}).filter(([_, d]) => d.uid === uid);
+
+      if (minhas.length === 0) {
+        dungeonList.innerHTML = `<p style="color: red;">Você ainda não tem dungeons cadastradas.</p>`;
+        return;
+      }
+
+      for (const [id, d] of minhas) {
+  const card = document.createElement("div");
+  card.classList.add("personagem-card");
+ const corTipo = d.tipo === "azul" ? "#00ccff" : "#ff4d4d";
+
+card.innerHTML = `
+  <img src="assets/dungeons-images/${d.imagem}" class="char-thumb" />
+  <div>
+    <span style="color: #9b59b6;"><strong>${d.nome}</strong></span><br>
+    <span style="color: white;"><i class="fas fa-flask"></i> Tipo:</span>
+    <span style="color: ${corTipo}; font-weight: bold;"> ${d.tipo}</span><br>
+    <span style="color: white;"><i class="fas fa-bolt"></i> Consome:</span>
+    <span style="color: ${corTipo}; font-weight: bold;"> ${d.quantidade}</span>
+  </div>
+  <div class="acoes">
+    <button class="editar-dungeon" data-id="${id}" title="Editar Dungeon">
+      <i class="fas fa-edit"></i>
+    </button>
+    <button class="excluir-dungeon" data-id="${id}" title="Excluir Dungeon">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+`;
+
+
+
+  dungeonList.appendChild(card);
+}
+dungeonList.addEventListener("click", async (e) => {
+  const id = e.target.dataset.id;
+  if (!id) return;
+
+  if (e.target.classList.contains("excluir-dungeon")) {
+    Swal.fire({
+      title: "Excluir Dungeon?",
+      text: "Essa ação é irreversível.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#e74c3c"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await fetch(`http://localhost:8000/dungeons/${id}`, {
+          method: "DELETE"
+        });
+        Swal.fire("Excluída!", "Dungeon removida.", "success");
+        carregarDungeons(firebase.auth().currentUser.uid);
+      }
+    });
+  }
+
+  if (e.target.classList.contains("editar-dungeon")) {
+    const dungeon = minhas.find(([key]) => key === id)?.[1];
+    if (!dungeon) return;
+
+    const { value: formValues } = await Swal.fire({
+      title: "Editar Dungeon",
+      html: `
+        <input id="swal-nome" class="swal2-input" placeholder="Nome" value="${dungeon.nome}">
+        <select id="swal-tipo" class="swal2-select">
+          <option value="azul" ${dungeon.tipo === "azul" ? "selected" : ""}>🔵 Azul</option>
+          <option value="vermelha" ${dungeon.tipo === "vermelha" ? "selected" : ""}>🔴 Vermelha</option>
+        </select>
+        <input type="number" id="swal-quantidade" class="swal2-input" placeholder="Quantidade" value="${dungeon.quantidade}">
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return {
+          nome: document.getElementById("swal-nome").value,
+          tipo: document.getElementById("swal-tipo").value,
+          quantidade: parseInt(document.getElementById("swal-quantidade").value),
+          imagem: dungeon.imagem,
+          uid: dungeon.uid
+        };
+      }
+    });
+
+    if (formValues) {
+      await fetch(`http://localhost:8000/dungeons/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues)
+      });
+      Swal.fire("Editado!", "Dungeon atualizada com sucesso!", "success");
+      carregarDungeons(firebase.auth().currentUser.uid);
+    }
+  }
+});
+
+    }
+  </script>
+</body>
+</html>

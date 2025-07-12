@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - PXG</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <div class="form-container">
+    <h2>Login</h2>
+    <form id="login-form">
+      <label>Email:</label>
+      <input type="email" name="email" required>
+      <label>Senha:</label>
+      <input type="password" name="senha" required>
+      <button type="submit">Entrar</button>
+      <a href="sign-in.html" class="voltar">Criar conta</a>
+    </form>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script>
+    const form = document.getElementById("login-form");
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const email = form.email.value;
+      const senha = form.senha.value;
+
+      firebase.auth().signInWithEmailAndPassword(email, senha)
+        .then(() => window.location.href = "index.html")
+        .catch(err => alert("Erro ao logar: " + err.message));
+    });
+
+    tsParticles.load("particles", {
+      fullScreen: { enable: true, zIndex: -1 },
+      background: { color: "#0b0b0b" },
+      particles: {
+        number: { value: 60 },
+        color: { value: ["#ff4d4d", "#00ccff", "#ffffff"] },
+        size: { value: 2 },
+        move: { enable: true, speed: 0.6 },
+        links: { enable: true, color: "#444", distance: 100, opacity: 0.4 }
+      }
+    });
+  </script>
+</body>
+</html>
