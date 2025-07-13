@@ -16,7 +16,7 @@ function calcularTempoRestante(ultimaDataISO, intervaloMinutos) {
 }
 
 function loadPersonagens(uid, displayName) {
-  fetch("http://localhost:8000/personagens")
+  fetch(`${API_BASE_URL}/personagens`)
     .then(res => res.json())
     .then(data => {
       const lista = document.querySelector(".lista");
@@ -74,7 +74,7 @@ function loadPersonagens(uid, displayName) {
 
         //att no Firebase se a energia mudou
         if (energiaNovaAzul !== energiaAzul || energiaNovaVermelha !== energiaVermelha) {
-          fetch(`http://localhost:8000/personagens/${id}`, {
+          fetch(`${API_BASE_URL}/personagens/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -163,7 +163,7 @@ function ativarEventos(personagens, uid, displayName) {
         cancelButtonText: "Cancelar"
       }).then(result => {
         if (result.isConfirmed) {
-          fetch(`http://localhost:8000/personagens/${id}`, { method: "DELETE" })
+          fetch(`${API_BASE_URL}/personagens/${id}`, { method: "DELETE" })
             .then(res => {
               if (res.ok) {
                 Swal.fire("Excluído!", "Personagem removido com sucesso.", "success").then(() => {
@@ -184,7 +184,7 @@ function ativarEventos(personagens, uid, displayName) {
       const personagem = personagens.find(([pid]) => pid === id)?.[1];
       if (!personagem) return;
 
-      const res = await fetch(`http://localhost:8000/dungeons?uid=${firebase.auth().currentUser.uid}`);
+      const res = await fetch(`${API_BASE_URL}/dungeons?uid=${firebase.auth().currentUser.uid}`);
 
       const dungeons = await res.json();
       const azul = [], vermelha = [];
@@ -240,7 +240,7 @@ function ativarEventos(personagens, uid, displayName) {
               updateData.ultima_vermelha = new Date().toISOString();
             }
 
-            const confirm = await fetch(`http://localhost:8000/personagens/${id}`, {
+            const confirm = await fetch(`${API_BASE_URL}/personagens/${id}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(updateData)
