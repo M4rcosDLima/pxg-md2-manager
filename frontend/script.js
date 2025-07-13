@@ -1,5 +1,7 @@
 // frontend/script.js
-fetch("http://localhost:8000/personagens")
+<script src="config.js"></script>
+
+fetch(`${API_BASE_URL}/personagens`)
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById("personagens-container");

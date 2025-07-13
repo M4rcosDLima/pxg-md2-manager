@@ -64,7 +64,7 @@ regen_vermelha: parseInt(form.regen_vermelha.value),
       };
 
       try {
-  const res = await fetch("http://localhost:8000/personagens", {
+  const res = await fetch(`${API_BASE_URL}/personagens/${id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)

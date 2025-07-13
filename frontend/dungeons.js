@@ -24,7 +24,7 @@ firebase.auth().onAuthStateChanged(user => {
     };
 
     try {
-      const res = await fetch("http://localhost:8000/dungeons", {
+      const res = await fetch(`${API_BASE_URL}/dungeons`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -47,7 +47,7 @@ firebase.auth().onAuthStateChanged(user => {
 });
 
 function carregarDungeons() {
-  fetch("http://localhost:8000/dungeons")
+  fetch(`${API_BASE_URL}/dungeons`)
     .then(res => res.json())
     .then(data => {
       const lista = document.getElementById("dungeon-lista");

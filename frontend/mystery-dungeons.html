@@ -9,6 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="config.js"></script>
 
 </head>
 <body>
@@ -87,7 +88,7 @@
         };
 
         try {
-          const res = await fetch("http://localhost:8000/dungeons", {
+          const res = await fetch(`${API_BASE_URL}/dungeons`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -111,7 +112,7 @@
     });
 
     async function carregarDungeons(uid) {
-      const res = await fetch("http://localhost:8000/dungeons");
+      const res = await fetch(`${API_BASE_URL}/dungeons`);
       const data = await res.json();
       dungeonList.innerHTML = "";
 
@@ -165,7 +166,7 @@ dungeonList.addEventListener("click", async (e) => {
       confirmButtonColor: "#e74c3c"
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await fetch(`http://localhost:8000/dungeons/${id}`, {
+        await fetch(`${API_BASE_URL}/dungeons/${id}`, {
           method: "DELETE"
         });
         Swal.fire("Excluída!", "Dungeon removida.", "success");
@@ -201,7 +202,7 @@ dungeonList.addEventListener("click", async (e) => {
     });
 
     if (formValues) {
-      await fetch(`http://localhost:8000/dungeons/${id}`, {
+      await fetch(`${API_BASE_URL}/dungeons/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues)

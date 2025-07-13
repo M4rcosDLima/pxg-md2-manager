@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Carregar dados
-  const res = await fetch("http://localhost:8000/personagens");
+  const res = await fetch(`${API_BASE_URL}/personagens`);
   const data = await res.json();
   const personagem = data[id];
 
@@ -49,7 +49,7 @@ regen_vermelha: parseInt(form.regen_vermelha.value),
 
     };
 
-    const res = await fetch(`http://localhost:8000/personagens/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/personagens/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(atualizado)
